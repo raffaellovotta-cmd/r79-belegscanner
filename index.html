@@ -4,13 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="R79 Belege">
 <title>R79 — Belegscanner</title>
-<script src="https://unpkg.com/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
+:root{
   --gold:#DBC624;--gold-d:#B8A31E;--gold-l:#E8D468;
   --brown:#74624A;--warm:#A39A8D;--dark:#392E24;
   --green:#2d6a4f;--green-bg:#edf7f2;
@@ -22,72 +20,56 @@
   --font:'Outfit',sans-serif;--mono:'IBM Plex Mono',monospace;
   --r:14px;--rs:10px;
   --sh:0 2px 8px rgba(57,46,36,0.08);
-  --shm:0 8px 24px rgba(57,46,36,0.14);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;}
 body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
-
-/* HEADER */
 .header{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--sh);}
 .logo{height:28px;}
 .hdr-right{display:flex;align-items:center;gap:8px;}
 .uname{font-size:11px;color:var(--text3);font-family:var(--mono);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-login{background:var(--gold);color:var(--dark);border:none;padding:8px 16px;border-radius:var(--rs);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;}
-.btn-logout{background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:6px 12px;border-radius:var(--rs);font-family:var(--font);font-size:12px;cursor:pointer;}
-
-/* NAV */
+.btn-sm{padding:8px 16px;border-radius:var(--rs);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-login{background:var(--gold);color:var(--dark);}
+.btn-logout{background:var(--bg2);color:var(--text2);border:1px solid var(--border);}
 .nav{display:none;background:var(--white);border-bottom:1px solid var(--border);flex-shrink:0;}
 .nav.show{display:flex;}
 .nav-tab{flex:1;padding:11px 4px;text-align:center;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2.5px solid transparent;transition:all .15s;}
 .nav-tab.active{color:var(--dark);border-bottom-color:var(--gold);}
-
-/* MAIN */
 .main{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch;}
 .page{display:none;}
 .page.active{display:block;}
-
-/* LOGIN */
 .login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;text-align:center;gap:16px;padding:0 24px;}
 .login-ico{font-size:54px;}
 .login-t{font-size:22px;font-weight:600;}
 .login-s{font-size:14px;color:var(--text3);line-height:1.6;max-width:260px;}
 .btn-big{background:var(--gold);color:var(--dark);border:none;padding:15px;border-radius:var(--r);font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;width:100%;max-width:280px;transition:transform .1s;}
 .btn-big:active{transform:scale(0.97);}
-
-/* TYPE SELECT */
 .slbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:12px;}
 .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
 .tcard{background:var(--white);border:2.5px solid var(--border);border-radius:var(--r);padding:20px 12px;text-align:center;cursor:pointer;transition:all .18s;box-shadow:var(--sh);}
 .tcard:active{transform:scale(0.96);}
-.tcard.sel{border-color:var(--gold);background:rgba(219,198,36,0.05);box-shadow:0 4px 16px rgba(219,198,36,0.2);}
+.tcard.sel{border-color:var(--gold);background:rgba(219,198,36,0.05);}
 .tcard-ico{font-size:36px;margin-bottom:8px;}
 .tcard-name{font-size:15px;font-weight:600;margin-bottom:6px;}
 .tcard-path{font-size:10px;color:var(--text3);font-family:var(--mono);line-height:1.5;}
-
-/* FOTO */
 .card{background:var(--white);border-radius:var(--r);padding:20px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:14px;}
 .card-t{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:14px;}
-.foto-area{border:2px dashed var(--border2);border-radius:var(--r);min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .15s;background:var(--bg2);position:relative;overflow:hidden;}
+.foto-area{border:2px dashed var(--border2);border-radius:var(--r);min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:var(--bg2);position:relative;overflow:hidden;transition:background .15s;}
 .foto-area.has-img{border-style:solid;border-color:var(--gold);padding:0;min-height:auto;}
 .foto-area:active{background:var(--bg3);}
-.foto-preview{width:100%;max-height:240px;object-fit:contain;display:none;border-radius:calc(var(--r) - 2px);}
+.foto-preview{width:100%;max-height:240px;object-fit:contain;display:none;}
 .foto-ico{font-size:40px;}
 .foto-txt{font-size:15px;font-weight:500;color:var(--text2);}
 .foto-hint{font-size:12px;color:var(--text3);}
 .foto-change{position:absolute;bottom:10px;right:10px;background:rgba(57,46,36,.75);color:#fff;border:none;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;display:none;font-family:var(--font);}
 input[type=file]{display:none;}
-
-/* AI RECOGNITION */
 .ai-panel{display:none;margin-bottom:14px;}
 .ai-panel.show{display:block;}
 .ai-loading{background:var(--blue-bg);border:1px solid rgba(26,74,122,.2);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:12px;}
 .ai-spinner{width:20px;height:20px;border:2.5px solid var(--blue);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ai-txt{font-size:14px;color:var(--blue);font-weight:500;}
-.ai-txt small{display:block;font-size:12px;color:var(--blue);opacity:.7;font-weight:400;margin-top:2px;}
-
-/* FORM FIELDS */
+.ai-txt small{display:block;font-size:12px;opacity:.7;font-weight:400;margin-top:2px;}
 .fields-wrap{display:none;}
 .fields-wrap.show{display:block;}
 .field-group{margin-bottom:14px;}
@@ -98,24 +80,16 @@ input[type=file]{display:none;}
 .field-input:focus{outline:none;border-color:var(--gold);background:var(--white);}
 .field-input.ai-filled{border-color:rgba(45,106,79,.3);background:var(--green-bg);}
 select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a39a8d' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
-
-/* FILENAME */
 .fname-box{background:var(--dark);border-radius:var(--rs);padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--gold);word-break:break-all;line-height:1.6;}
-
-/* BUTTONS */
 .btn-upload{background:var(--gold);color:var(--dark);border:none;padding:16px;border-radius:var(--r);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:all .15s;margin-top:4px;}
 .btn-upload:active{transform:scale(0.98);}
 .btn-upload:disabled{background:var(--bg3);color:var(--text3);cursor:not-allowed;transform:none;}
-
-/* STATUS */
 .status{border-radius:var(--rs);padding:12px 16px;font-size:13px;margin-bottom:14px;display:none;align-items:center;gap:10px;border-left:3px solid;}
 .status.show{display:flex;}
 .status.loading{background:var(--blue-bg);color:var(--blue);border-color:var(--blue);}
 .status.success{background:var(--green-bg);color:var(--green);border-color:var(--green);}
-.status.error{background:#fdf1f1;color:var(--red);border-color:var(--red);}
+.status.error{background:var(--red-bg);color:var(--red);border-color:var(--red);}
 .spin{width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
-
-/* HISTORY */
 .hitem{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);}
 .hitem-ico{font-size:22px;flex-shrink:0;}
 .hitem-info{flex:1;min-width:0;}
@@ -124,8 +98,6 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
 .hbadge{font-size:10px;padding:2px 8px;border-radius:20px;font-family:var(--mono);flex-shrink:0;}
 .hbadge-q{background:rgba(116,98,74,0.12);color:var(--brown);}
 .hbadge-t{background:var(--blue-bg);color:var(--blue);}
-
-/* SETTINGS */
 .cfg-box{background:var(--dark);color:#e8e6e0;border-radius:var(--r);padding:20px;margin-bottom:14px;}
 .cfg-title{font-size:13px;font-weight:600;color:var(--gold);margin-bottom:14px;font-family:var(--mono);}
 .cfg-lbl{font-size:11px;color:var(--warm);font-family:var(--mono);margin-bottom:5px;opacity:.8;}
@@ -133,7 +105,6 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
 .cfg-input:focus{outline:none;border-color:var(--gold);}
 .cfg-hint{font-size:11px;color:var(--warm);opacity:.6;margin-top:-10px;margin-bottom:14px;}
 .btn-cfg{background:var(--gold);color:var(--dark);border:none;padding:11px;border-radius:var(--rs);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;width:100%;}
-
 .info-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);margin-bottom:14px;}
 .info-t{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:12px;}
 .info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
@@ -148,8 +119,8 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
   <img class="logo" src="data:image/png;base64,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" alt="R79">
   <div class="hdr-right">
     <span class="uname" id="uname"></span>
-    <button class="btn-login" id="btnLogin" onclick="doLogin()">Anmelden</button>
-    <button class="btn-logout" id="btnLogout" onclick="doLogout()" style="display:none">Abmelden</button>
+    <button class="btn-sm btn-login" id="btnLogin" onclick="doLogin()">Anmelden</button>
+    <button class="btn-sm btn-logout" id="btnLogout" onclick="doLogout()" style="display:none">Abmelden</button>
   </div>
 </div>
 
@@ -160,37 +131,32 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
 </div>
 
 <div class="main">
-
-  <!-- LOGIN -->
   <div class="page active" id="pageLogin">
     <div class="login-wrap">
       <div class="login-ico">🧾</div>
       <div class="login-t">R79 Belegscanner</div>
       <div class="login-s">Belege fotografieren — KI erkennt alles — direkt in OneDrive.</div>
       <button class="btn-big" onclick="doLogin()">Mit Microsoft anmelden</button>
-      <div style="font-size:12px;color:var(--text3);">Verwendet dein Microsoft 365 Konto</div>
+      <div style="font-size:12px;color:var(--text3)">Verwendet dein Microsoft 365 Konto</div>
     </div>
   </div>
 
-  <!-- SCAN -->
   <div class="page" id="pageScan">
-
     <div class="slbl">Schritt 1 — Belegart wählen</div>
     <div class="type-grid">
       <div class="tcard" id="tc-q" onclick="selType('q')">
         <div class="tcard-ico">🧾</div>
         <div class="tcard-name">Quittung</div>
-        <div class="tcard-path">…/Quittungen/<br>Kat_Lieferant_CHF.jpg</div>
+        <div class="tcard-path">Buchhaltung/<br>Monat/Quittungen/</div>
       </div>
       <div class="tcard" id="tc-t" onclick="selType('t')">
         <div class="tcard-ico">💳</div>
         <div class="tcard-name">Terminal</div>
-        <div class="tcard-path">…/Terminal/<br>Terminal_CHF.jpg</div>
+        <div class="tcard-path">Buchhaltung/<br>Monat/Terminal/</div>
       </div>
     </div>
 
     <div id="scanForm" style="display:none">
-
       <div class="slbl">Schritt 2 — Foto aufnehmen</div>
       <div class="card" style="padding:16px;margin-bottom:14px;">
         <div class="foto-area" id="fotoArea" onclick="document.getElementById('fileIn').click()">
@@ -203,7 +169,6 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
         <input type="file" id="fileIn" accept="image/*" capture="environment" onchange="onPhoto(this)">
       </div>
 
-      <!-- KI LÄDT -->
       <div class="ai-panel" id="aiPanel">
         <div class="ai-loading">
           <div class="ai-spinner"></div>
@@ -211,7 +176,6 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
         </div>
       </div>
 
-      <!-- FELDER (KI vorausgefüllt) -->
       <div class="fields-wrap" id="fieldsWrap">
         <div class="slbl">Schritt 3 — Prüfen &amp; bestätigen</div>
         <div class="card">
@@ -242,7 +206,7 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
           </div>
           <div id="fieldsT" style="display:none">
             <div class="field-group">
-              <div class="field-label">Betrag CHF <span class="ai-badge" id="badge-tbet">KI</span></div>
+              <div class="field-label">Betrag CHF <span class="ai-badge">KI</span></div>
               <input class="field-input" type="number" id="fTBet" placeholder="z.B. 4892.50" step="0.01" min="0">
             </div>
           </div>
@@ -256,109 +220,159 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
         <div class="status" id="statusEl"></div>
         <button class="btn-upload" id="btnUpload" onclick="doUpload()" disabled>↑ In OneDrive speichern</button>
       </div>
-
     </div>
   </div>
 
-  <!-- HISTORY -->
   <div class="page" id="pageHistory">
     <div class="slbl">Zuletzt gespeichert</div>
     <div id="histList"></div>
   </div>
 
-  <!-- SETTINGS -->
   <div class="page" id="pageSettings">
     <div class="cfg-box">
-      <div class="cfg-title">⚙ Azure App — Einmalig einrichten</div>
+      <div class="cfg-title">⚙ KI-Erkennung (optional)</div>
       <div class="cfg-lbl">Anthropic API Key</div>
-      <input class="cfg-input" type="password" id="cfgAnthropicKey" placeholder="sk-ant-…">
-      <div class="cfg-hint">Für die automatische Belekerkennung (Claude)</div>
-      <div class="cfg-lbl">Azure Client ID</div>
-      <input class="cfg-input" type="text" id="cfgClientId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
-      <div class="cfg-hint">Für den OneDrive-Upload (Azure App Registration)</div>
-      <button class="btn-cfg" onclick="saveConfig()">Speichern &amp; neu laden</button>
+      <input class="cfg-input" type="password" id="cfgAK" placeholder="sk-ant-…">
+      <div class="cfg-hint">Für automatische Belekerkennung</div>
+      <button class="btn-cfg" onclick="saveConfig()">Speichern</button>
     </div>
-
     <div class="info-box">
       <div class="info-t">OneDrive Ordnerstruktur</div>
       <div style="font-size:12px;color:var(--text2);font-family:var(--mono);line-height:1.9;">
         📁 R79/Buchhaltung/2026/<br>
         &nbsp;&nbsp;📁 04_April/<br>
         &nbsp;&nbsp;&nbsp;&nbsp;📁 <strong>Quittungen/</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🧾 2026-04-08_Material_Henkel_CHF142.50.jpg<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🧾 2026-04-09_Material_Henkel_CHF142.50.jpg<br>
         &nbsp;&nbsp;&nbsp;&nbsp;📁 <strong>Terminal/</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;💳 2026-04-08_Terminal_CHF4892.50.jpg
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;💳 2026-04-09_Terminal_CHF4892.50.jpg
       </div>
     </div>
-
-    <div class="info-box">
-      <div class="info-t">Setup-Anleitung Azure</div>
-      <div class="info-row"><span class="info-key">1. Azure Portal</span><span class="info-val">portal.azure.com → App-Registrierungen</span></div>
-      <div class="info-row"><span class="info-key">2. Neue Registrierung</span><span class="info-val">Name: R79 Belegscanner</span></div>
-      <div class="info-row"><span class="info-key">3. Kontotyp</span><span class="info-val">Beliebige Organisation + persönlich</span></div>
-      <div class="info-row"><span class="info-key">4. Redirect URI</span><span class="info-val">Single-Page-App (SPA) → diese URL</span></div>
-      <div class="info-row"><span class="info-key">5. API-Berechtigung</span><span class="info-val">Files.ReadWrite hinzufügen</span></div>
-      <div class="info-row"><span class="info-key">6. Client-ID kopieren</span><span class="info-val">Oben in Setup einfügen</span></div>
-    </div>
   </div>
-
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
-var CFG = {
-  clientId: localStorage.getItem('r79_cid') || '9239efed-1444-4c14-8351-3986fff0b8c2',
-  anthropicKey: localStorage.getItem('r79_ak') || ''
-};
-var SCOPES = ['Files.ReadWrite','User.Read'];
-var msalApp = null, account = null, selType_ = null;
+// ── OAUTH2 PKCE — keine externe Bibliothek ──────────────────
+var CLIENT_ID = '9239efed-1444-4c14-8351-3986fff0b8c2';
+var REDIRECT_URI = 'https://raffaellovotta-cmd.github.io/r79-belegscanner/';
+var SCOPES = 'files.readwrite user.read';
+var AUTH_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+var TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+
+var accessToken = null;
+var tokenExpiry = 0;
 var hist = JSON.parse(localStorage.getItem('r79_hist') || '[]');
+var selType_ = null;
 var curPage = 'login';
 
-// ─── MSAL INIT ────────────────────────────────────────────
-function initMsal() {
-  if (!CFG.clientId) return;
-  msalApp = new msal.PublicClientApplication({
-    auth: { clientId: CFG.clientId, authority: 'https://login.microsoftonline.com/common', redirectUri: 'https://raffaellovotta-cmd.github.io/r79-belegscanner/' },
-    cache: { cacheLocation: 'localStorage' }
-  });
-  msalApp.handleRedirectPromise().then(function(r) {
-    if (r) account = r.account;
-    else { var a = msalApp.getAllAccounts(); if (a.length) account = a[0]; }
-    refreshUI();
-  }).catch(function(e) { console.error(e); });
+// ── PKCE HELPERS ────────────────────────────────────────────
+function base64urlEncode(buffer) {
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+async function generateCodeVerifier() {
+  var arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  return base64urlEncode(arr);
+}
+async function generateCodeChallenge(verifier) {
+  var encoder = new TextEncoder();
+  var data = encoder.encode(verifier);
+  var digest = await crypto.subtle.digest('SHA-256', data);
+  return base64urlEncode(digest);
 }
 
-function doLogin() {
-  if (!CFG.clientId) { alert('Bitte zuerst die Azure Client-ID unter Setup eintragen.'); goPage('settings'); document.getElementById('nav').classList.add('show'); return; }
-  msalApp.loginRedirect({ scopes: SCOPES });
+// ── LOGIN ───────────────────────────────────────────────────
+async function doLogin() {
+  var state = Math.random().toString(36).substring(2);
+  localStorage.setItem('r79_state', state);
+  var params = new URLSearchParams({
+    client_id: CLIENT_ID,
+    response_type: 'token',
+    redirect_uri: REDIRECT_URI,
+    scope: SCOPES,
+    state: state,
+    prompt: 'select_account',
+    nonce: Math.random().toString(36).substring(2)
+  });
+  window.location.href = AUTH_URL + '?' + params.toString();
+}
+
+// ── HANDLE REDIRECT ─────────────────────────────────────────
+async function handleRedirect() {
+  // Check hash for implicit flow token
+  var hash = window.location.hash.substring(1);
+  if (!hash) return;
+  var params = new URLSearchParams(hash);
+  var token = params.get('access_token');
+  var error = params.get('error');
+  if (error) { alert('Login Fehler: ' + params.get('error_description')); window.history.replaceState({}, '', window.location.pathname); return; }
+  if (!token) return;
+  window.history.replaceState({}, '', window.location.pathname);
+  var expiresIn = parseInt(params.get('expires_in') || '3600');
+  accessToken = token;
+  tokenExpiry = Date.now() + (expiresIn * 1000);
+  localStorage.setItem('r79_token', accessToken);
+  localStorage.setItem('r79_expiry', tokenExpiry);
+  await fetchUserInfo();
+}
+
+async function fetchUserInfo() {
+  var resp = await fetch('https://graph.microsoft.com/v1.0/me', {
+    headers: { 'Authorization': 'Bearer ' + accessToken }
+  });
+  var user = await resp.json();
+  localStorage.setItem('r79_user', JSON.stringify({ name: user.displayName, email: user.userPrincipalName }));
+  refreshUI();
+}
+
+async function getValidToken() {
+  if (accessToken && Date.now() < tokenExpiry - 60000) return accessToken;
+  var stored = localStorage.getItem('r79_token');
+  var expiry = parseInt(localStorage.getItem('r79_expiry') || '0');
+  if (stored && expiry > Date.now() + 60000) {
+    accessToken = stored;
+    tokenExpiry = expiry;
+    return accessToken;
+  }
+  doLogin();
+  return null;
 }
 
 function doLogout() {
-  msalApp.logoutRedirect();
+  localStorage.removeItem('r79_token');
+  localStorage.removeItem('r79_expiry');
+  localStorage.removeItem('r79_refresh');
+  localStorage.removeItem('r79_user');
+  accessToken = null;
+  refreshUI();
 }
 
+// ── UI ──────────────────────────────────────────────────────
 function refreshUI() {
-  var in_ = !!account;
-  document.getElementById('btnLogin').style.display = in_ ? 'none' : '';
-  document.getElementById('btnLogout').style.display = in_ ? '' : 'none';
-  document.getElementById('uname').textContent = in_ ? (account.name || account.username) : '';
-  document.getElementById('nav').classList.toggle('show', in_);
-  if (in_ && curPage === 'login') goPage('scan');
-  else if (!in_) goPage('login');
+  var user = JSON.parse(localStorage.getItem('r79_user') || 'null');
+  var loggedIn = !!(user && accessToken);
+  document.getElementById('btnLogin').style.display = loggedIn ? 'none' : '';
+  document.getElementById('btnLogout').style.display = loggedIn ? '' : 'none';
+  document.getElementById('uname').textContent = loggedIn ? (user.name || user.email) : '';
+  document.getElementById('nav').classList.toggle('show', loggedIn);
+  if (loggedIn && curPage === 'login') goPage('scan');
+  else if (!loggedIn) goPage('login');
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────
 function goPage(p) {
   curPage = p;
-  ['pageScan','pageHistory','pageSettings','pageLogin'].forEach(function(id) { document.getElementById(id).classList.remove('active'); });
+  ['pageScan','pageHistory','pageSettings','pageLogin'].forEach(function(id) {
+    document.getElementById(id).classList.remove('active');
+  });
   var map = {scan:'pageScan',history:'pageHistory',settings:'pageSettings',login:'pageLogin'};
   if (map[p]) document.getElementById(map[p]).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach(function(t,i) { t.classList.toggle('active', ['scan','history','settings'].indexOf(p) === i); });
+  document.querySelectorAll('.nav-tab').forEach(function(t,i) {
+    t.classList.toggle('active', ['scan','history','settings'].indexOf(p) === i);
+  });
   if (p === 'history') renderHist();
 }
 
-// ─── TYPE SELECT ──────────────────────────────────────────
+// ── TYPE ────────────────────────────────────────────────────
 function selType(t) {
   selType_ = t;
   document.getElementById('tc-q').classList.toggle('sel', t === 'q');
@@ -374,7 +388,7 @@ function selType(t) {
   updateFname();
 }
 
-// ─── PHOTO ────────────────────────────────────────────────
+// ── FOTO ────────────────────────────────────────────────────
 function onPhoto(input) {
   if (!input.files || !input.files[0]) return;
   var reader = new FileReader();
@@ -389,60 +403,39 @@ function onPhoto(input) {
   reader.readAsDataURL(input.files[0]);
 }
 
-// ─── KI ERKENNUNG ────────────────────────────────────────
 function recognizeBeleg(file, dataUrl) {
+  var ak = localStorage.getItem('r79_ak') || '';
   document.getElementById('aiPanel').classList.add('show');
   document.getElementById('fieldsWrap').classList.remove('show');
-  document.getElementById('btnUpload').disabled = true;
-
-  if (!CFG.anthropicKey) {
-    document.getElementById('aiPanel').classList.remove('show');
-    showFieldsManual();
-    return;
-  }
-
-  // Base64 ohne Header
+  if (!ak) { document.getElementById('aiPanel').classList.remove('show'); showFieldsManual(); return; }
   var b64 = dataUrl.split(',')[1];
-  var mediaType = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
-
+  var mt = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
   var prompt = selType_ === 'q'
-    ? 'Analysiere diese Quittung und antworte NUR mit JSON (kein Text davor/danach):\n{"kategorie":"Material|Miete|Personal|IT|Fahrzeug|Versicherung|Beratung|Spesen|Sonstiges","lieferant":"Firmenname","betrag":"Zahl ohne CHF Zeichen z.B. 142.50"}'
-    : 'Analysiere diesen Kreditkarten-Terminal-Beleg und antworte NUR mit JSON:\n{"betrag":"Gesamtbetrag als Zahl z.B. 4892.50"}';
-
+    ? 'Analysiere diese Quittung. Antworte NUR mit JSON ohne Markdown: {"kategorie":"Material|Miete|Personal|IT|Fahrzeug|Versicherung|Beratung|Spesen|Sonstiges","lieferant":"Firmenname","betrag":"142.50"}'
+    : 'Analysiere diesen Terminal-Beleg. Antworte NUR mit JSON ohne Markdown: {"betrag":"4892.50"}';
   fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': CFG.anthropicKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-opus-4-20250514',
-      max_tokens: 200,
+    headers: { 'Content-Type': 'application/json', 'x-api-key': ak, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({ model: 'claude-opus-4-20250514', max_tokens: 150,
       messages: [{ role: 'user', content: [
-        { type: 'image', source: { type: 'base64', media_type: mediaType, data: b64 } },
+        { type: 'image', source: { type: 'base64', media_type: mt, data: b64 } },
         { type: 'text', text: prompt }
       ]}]
     })
-  })
-  .then(function(r) { return r.json(); })
+  }).then(function(r){ return r.json(); })
   .then(function(data) {
     document.getElementById('aiPanel').classList.remove('show');
     try {
-      var txt = data.content && data.content[0] ? data.content[0].text : '';
-      var json = JSON.parse(txt.replace(/```json|```/g,'').trim());
-      fillFields(json);
-    } catch(e) {
-      showFieldsManual();
-    }
-  })
-  .catch(function() {
-    document.getElementById('aiPanel').classList.remove('show');
-    showFieldsManual();
-  });
+      var txt = (data.content && data.content[0]) ? data.content[0].text : '';
+      fillFields(JSON.parse(txt));
+    } catch(e) { showFieldsManual(); }
+  }).catch(function(){ document.getElementById('aiPanel').classList.remove('show'); showFieldsManual(); });
 }
 
 function fillFields(json) {
   document.getElementById('fieldsQ').style.display = selType_ === 'q' ? 'block' : 'none';
   document.getElementById('fieldsT').style.display = selType_ === 't' ? 'block' : 'none';
   document.getElementById('fieldsWrap').classList.add('show');
-
   if (selType_ === 'q') {
     if (json.kategorie) { document.getElementById('fKat').value = json.kategorie; document.getElementById('fKat').classList.add('ai-filled'); }
     if (json.lieferant) { document.getElementById('fLief').value = json.lieferant; document.getElementById('fLief').classList.add('ai-filled'); }
@@ -461,15 +454,14 @@ function showFieldsManual() {
   document.getElementById('btnUpload').disabled = false;
 }
 
-// ─── FILENAME ────────────────────────────────────────────
+// ── FILENAME ────────────────────────────────────────────────
 function pad(n){ return String(n).padStart(2,'0'); }
 function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
 function monthFolder(){ var d=new Date(),m=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember']; return pad(d.getMonth()+1)+'_'+m[d.getMonth()]; }
 function san(s){ return (s||'').replace(/[^a-zA-Z0-9äöüÄÖÜ]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,''); }
 
 function updateFname() {
-  var d = todayStr();
-  var fname = '—';
+  var d = todayStr(), fname = '—';
   if (selType_ === 'q') {
     var kat = san(document.getElementById('fKat').value) || 'Kategorie';
     var lief = san(document.getElementById('fLief').value) || 'Lieferant';
@@ -481,23 +473,17 @@ function updateFname() {
   }
   document.getElementById('fnameBox').textContent = fname;
 }
-document.addEventListener('input', function(e) { if (['fKat','fLief','fBet','fTBet'].indexOf(e.target.id) >= 0) updateFname(); });
+document.addEventListener('input', function(e){
+  if (['fKat','fLief','fBet','fTBet'].indexOf(e.target.id) >= 0) updateFname();
+});
 
-// ─── UPLOAD ───────────────────────────────────────────────
-function getToken() {
-  return msalApp.acquireTokenSilent({ scopes: SCOPES, account: account })
-    .catch(function() {
-      msalApp.acquireTokenRedirect({ scopes: SCOPES });
-      return Promise.reject('Weiterleitung...');
-    });
-}
-
+// ── UPLOAD ──────────────────────────────────────────────────
 function resizeImg(file, maxW, q) {
   return new Promise(function(res) {
     var img = new Image(), url = URL.createObjectURL(file);
     img.onload = function() {
-      var w=img.width, h=img.height;
-      if (w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      var w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
       var c=document.createElement('canvas'); c.width=w; c.height=h;
       c.getContext('2d').drawImage(img,0,0,w,h);
       c.toBlob(function(b){URL.revokeObjectURL(url);res(b);},'image/jpeg',q||0.88);
@@ -519,26 +505,21 @@ function showStatus(type, msg) {
 
 async function doUpload() {
   var fileIn = document.getElementById('fileIn');
-  if (!fileIn.files || !fileIn.files[0]) { showStatus('error','Kein Foto ausgewählt'); return; }
-
+  if (!fileIn.files || !fileIn.files[0]) { showStatus('error','Kein Foto'); return; }
   var fname = document.getElementById('fnameBox').textContent;
-  if (fname === '—') { showStatus('error','Bitte alle Felder ausfüllen'); return; }
-
+  if (fname === '—') { showStatus('error','Felder ausfüllen'); return; }
   document.getElementById('btnUpload').disabled = true;
   showStatus('loading','Wird hochgeladen…');
-
   try {
+    var token = await getValidToken();
+    if (!token) return;
     var blob = await resizeImg(fileIn.files[0], 1800, 0.88);
-    var resp = await getToken();
-    var token = resp.accessToken;
     var sub = selType_ === 'q' ? 'Quittungen' : 'Terminal';
     var path = getPath(sub, fname);
-
     var r = await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+encodeURIComponent(path)+':/content',{
       method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'image/jpeg'}, body:blob
     });
-    if (!r.ok) throw new Error('HTTP '+r.status);
-
+    if (!r.ok) { var err = await r.json(); throw new Error(err.error ? err.error.message : 'HTTP '+r.status); }
     showStatus('success','Gespeichert: '+fname);
     hist.unshift({type:selType_,fname:fname,date:new Date().toLocaleString('de-CH')});
     if(hist.length>60) hist=hist.slice(0,60);
@@ -551,44 +532,49 @@ async function doUpload() {
 }
 
 function resetScan() {
-  document.getElementById('fileIn').value = '';
-  document.getElementById('fotoPreview').style.display = 'none';
+  document.getElementById('fileIn').value='';
+  document.getElementById('fotoPreview').style.display='none';
   document.getElementById('fotoArea').classList.remove('has-img');
-  document.getElementById('fotoChange').style.display = 'none';
+  document.getElementById('fotoChange').style.display='none';
   document.getElementById('fieldsWrap').classList.remove('show');
   document.getElementById('aiPanel').classList.remove('show');
-  ['fKat','fLief','fBet','fTBet'].forEach(function(id){ var el=document.getElementById(id); el.value=''; el.classList.remove('ai-filled'); });
+  ['fKat','fLief','fBet','fTBet'].forEach(function(id){
+    var el=document.getElementById(id); el.value=''; el.classList.remove('ai-filled');
+  });
   document.getElementById('tc-q').classList.remove('sel');
   document.getElementById('tc-t').classList.remove('sel');
-  document.getElementById('scanForm').style.display = 'none';
-  document.getElementById('fnameBox').textContent = '—';
-  document.getElementById('btnUpload').disabled = true;
-  selType_ = null;
+  document.getElementById('scanForm').style.display='none';
+  document.getElementById('fnameBox').textContent='—';
+  document.getElementById('btnUpload').disabled=true;
+  selType_=null;
 }
 
-// ─── HISTORY ──────────────────────────────────────────────
 function renderHist() {
   var el = document.getElementById('histList');
-  if (!hist.length) { el.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:13px;padding:40px 0;">Noch keine Belege gespeichert</div>'; return; }
+  if (!hist.length) { el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:40px 0;">Noch keine Belege</div>'; return; }
   el.innerHTML = hist.slice(0,30).map(function(h) {
     return '<div class="hitem"><div class="hitem-ico">'+(h.type==='q'?'🧾':'💳')+'</div><div class="hitem-info"><div class="hitem-name">'+h.fname+'</div><div class="hitem-date">'+h.date+'</div></div><span class="hbadge '+(h.type==='q'?'hbadge-q':'hbadge-t')+'">'+(h.type==='q'?'Quittung':'Terminal')+'</span></div>';
   }).join('');
 }
 
-// ─── CONFIG ───────────────────────────────────────────────
 function saveConfig() {
-  var ak = document.getElementById('cfgAnthropicKey').value.trim();
-  var cid = document.getElementById('cfgClientId').value.trim();
-  if (ak) localStorage.setItem('r79_ak', ak);
-  if (cid) localStorage.setItem('r79_cid', cid);
-  location.reload();
+  var ak = document.getElementById('cfgAK').value.trim();
+  if (ak && !ak.startsWith('•')) localStorage.setItem('r79_ak', ak);
+  document.getElementById('cfgAK').value = localStorage.getItem('r79_ak') ? '••••••••' : '';
+  alert('Gespeichert!');
 }
 
-// ─── INIT ─────────────────────────────────────────────────
-document.getElementById('cfgAnthropicKey').value = CFG.anthropicKey ? '••••••••' : '';
-document.getElementById('cfgClientId').value = CFG.clientId;
-initMsal();
-if (!CFG.clientId || !msalApp) refreshUI();
+// ── INIT ────────────────────────────────────────────────────
+document.getElementById('cfgAK').value = localStorage.getItem('r79_ak') ? '••••••••' : '';
+// Restore token from localStorage
+var storedToken = localStorage.getItem('r79_token');
+var storedExpiry = parseInt(localStorage.getItem('r79_expiry') || '0');
+if (storedToken && storedExpiry > Date.now()) {
+  accessToken = storedToken;
+  tokenExpiry = storedExpiry;
+}
+// Handle OAuth redirect
+handleRedirect().then(function() { refreshUI(); });
 </script>
 </body>
 </html>
